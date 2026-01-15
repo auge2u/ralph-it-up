@@ -1,0 +1,25 @@
+# ralph-orchestrator configuration for ralph-it-up-roadmap
+# https://github.com/mikeyobrien/ralph-orchestrator
+
+# Agent selection (claude recommended for roadmap generation)
+agent: claude
+
+# Task file (copy PROMPT.md to your project root)
+prompt_file: PROMPT.md
+
+# Iteration limits
+max_iterations: 15          # Roadmap generation typically needs 5-10 iterations
+max_runtime: 3600           # 1 hour max runtime
+
+# Cost controls
+max_tokens: 500000          # Token budget per run
+max_cost: 25.0              # USD cost ceiling
+
+# Git checkpointing (recommended for recovery)
+checkpoint_interval: 3      # Commit progress every 3 iterations
+
+# Output verbosity
+verbose: false
+
+# Completion marker (do not change - matches skill definition)
+completion_promise: "LOOP_COMPLETE"

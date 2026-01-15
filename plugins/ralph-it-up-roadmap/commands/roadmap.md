@@ -1,31 +1,21 @@
 ---
 description: Generate a full scope roadmap (MVP/early release → next major stage) by scanning /docs, PRDs, and legacy tasks.
+skill: roadmap-scopecraft
+agent: product-owner
 ---
 
 # Roadmap — ralph-it-up (ScopeCraft)
 
-You are a **product owner** partnering with **senior developers** and a **business/PMF-focused team**.
+Execute the **roadmap-scopecraft** skill to generate a complete product roadmap.
 
-## What to scan (in priority order)
-1) `/docs` (PRDs: initial + historical, strategy notes, architecture notes)
-2) `README`, `CHANGELOG`, ADRs, architecture docs
-3) Open TODOs in code; issues/backlog files if present
-4) “pending tasks” notes or legacy scope lists
+## Execution
 
-## Output requirements
-Create the following files under `./scopecraft/`:
+1. Follow all instructions in `skills/roadmap-scopecraft/SKILL.md`
+2. Use templates from `skills/roadmap-scopecraft/templates/`
+3. Output all files to `./scopecraft/`
 
-- `VISION_AND_STAGE_DEFINITION.md`
-- `ROADMAP.md`
-- `EPICS_AND_STORIES.md`
-- `RISKS_AND_DEPENDENCIES.md`
-- `METRICS_AND_PMF.md`
-- `OPEN_QUESTIONS.md`
+## Style Constraints
 
-Use the formatting rules from:
-`skills/roadmap-scopecraft/templates/`
-
-## Style constraints
-- Be explicit, practical, and senior-engineer-friendly.
-- Optimize for outcomes (PMF) and delivery feasibility.
-- Keep roadmap to 3–5 phases max.
+- Be explicit, practical, and senior-engineer-friendly
+- Optimize for outcomes (PMF) and delivery feasibility
+- Keep roadmap to 3–5 phases max

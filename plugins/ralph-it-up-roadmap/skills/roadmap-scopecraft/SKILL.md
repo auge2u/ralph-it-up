@@ -6,6 +6,7 @@ description: Builds a full-scope product roadmap for an existing project by scan
 You are acting as a **product owner** partnering with **senior engineers** and a **PMF-focused team**.
 
 ## When to use
+
 Use this skill when the user asks for:
 - roadmap planning from an existing repo
 - converting legacy scope or pending tasks into a clean backlog
@@ -13,6 +14,7 @@ Use this skill when the user asks for:
 - maturity planning (MVP → next major stage)
 
 ## Ground rules
+
 - Prefer evidence from the repo: `/docs`, `README`, ADRs, architecture docs, backlog/task files.
 - If PRDs conflict, reconcile by:
   1) newest decision wins (when clearly dated/versioned),
@@ -20,16 +22,47 @@ Use this skill when the user asks for:
   3) propose a decision and list stakeholders needed.
 - Produce outputs as files under `./scopecraft/` for easy sharing.
 
+## Scratchpad protocol (for orchestrated mode)
+
+When running in orchestrated/loop mode:
+
+1. **Read first**: Check `.agent/scratchpad.md` for prior context
+2. **Track progress**: Note what's done, what's remaining, blockers
+3. **Update after**: Write progress to scratchpad before completing iteration
+
+Scratchpad format:
+```markdown
+# Scratchpad — ralph-it-up-roadmap
+
+## Last Updated
+[timestamp]
+
+## Progress
+- [x] Completed item
+- [ ] Remaining item
+
+## Decisions Made
+- [Decision and rationale]
+
+## Blockers
+- [Current blockers]
+
+## Next Steps
+- [What to do next iteration]
+```
+
 ## Discovery procedure (do this first)
+
 1) Inventory documents:
    - list PRDs and PRD-like docs in `/docs` (initial + historical)
    - identify architecture decisions (ADRs), constraints, and non-goals
 2) Inventory scope sources:
-   - open issues / TODOs / backlog lists / “legacy scope” notes
+   - open issues / TODOs / backlog lists / "legacy scope" notes
 3) Infer current stage:
    - MVP/alpha/beta/early release signals (missing monitoring, limited permissions, minimal onboarding, weak reliability, etc.)
 
 ## Convert legacy scope into a backlog model
+
 Normalize every task into:
 - Epic
 - User story (who/what/why)
@@ -39,11 +72,12 @@ Normalize every task into:
 - Complexity bucket (S/M/L/XL)
 
 ## Build the maturity roadmap (required structure)
+
 Use the templates in `templates/` and produce:
 
 ### 1) VISION_AND_STAGE_DEFINITION.md
 - Product vision summary (customer + problem + value)
-- “Next major stage” definition with completion criteria
+- "Next major stage" definition with completion criteria
 - Assumptions + constraints
 
 ### 2) ROADMAP.md
@@ -77,14 +111,15 @@ Each epic must include:
 ### 5) METRICS_AND_PMF.md
 - North Star metric + supporting metrics
 - PMF signals: activation funnel, retention, usage depth
-- Instrumentation plan (what must be tracked to call the stage “done”)
+- Instrumentation plan (what must be tracked to call the stage "done")
 
 ### 6) OPEN_QUESTIONS.md
 - Questions blocking prioritization or delivery
 - Proposed experiments or stakeholder asks to resolve them
 
-## Optional: orchestration integration
-If run in a loop:
-- iterate until outputs are complete and consistent
-- use the completion promise exactly: `ROADMAP_COMPLETE`
-- improve gaps rather than rewriting everything each cycle
+## Completion promise
+
+When running in orchestrated mode (ralph-orchestrator compatible):
+- Iterate until outputs are complete and consistent
+- Use the completion promise exactly: `LOOP_COMPLETE`
+- Improve gaps rather than rewriting everything each cycle
