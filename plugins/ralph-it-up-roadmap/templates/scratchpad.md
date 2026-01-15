@@ -5,6 +5,9 @@ Cross-iteration context for ralph-orchestrator. This file persists between loop 
 ## Last Updated
 [Will be updated by agent]
 
+## Iteration
+Current: 1
+
 ## Progress
 
 ### Discovery
@@ -21,11 +24,24 @@ Cross-iteration context for ralph-orchestrator. This file persists between loop 
 - [ ] METRICS_AND_PMF.md
 - [ ] OPEN_QUESTIONS.md
 
-### Quality Checks
-- [ ] All outputs internally consistent
-- [ ] Acceptance criteria on all stories
-- [ ] Repo evidence referenced
-- [ ] 3-5 phases in roadmap
+## Quality Gate Status
+
+> Update this section after each iteration by checking outputs against gates.
+
+| Status | Gate | Actual | Required |
+|--------|------|--------|----------|
+| ⏳ | all_outputs_exist | 0/6 | 6 files |
+| ⏳ | phases_in_range | - | 3-5 phases |
+| ⏳ | epics_have_stories | - | 5+ stories |
+| ⏳ | stories_have_acceptance_criteria | - | 5+ AC sections |
+| ⏳ | risks_documented | - | 3+ risk rows |
+| ⏳ | metrics_defined | - | Has North Star |
+| ⏳ | no_todo_placeholders | - | 0 placeholders |
+
+**Legend:** ✅ Pass | ❌ Fail | ⏳ Pending
+
+### Blockers Remaining
+- All gates pending (iteration 1)
 
 ## Decisions Made
 - [None yet]
@@ -35,3 +51,5 @@ Cross-iteration context for ralph-orchestrator. This file persists between loop 
 
 ## Next Steps
 - Begin discovery phase
+- Scan /docs for PRDs and requirements
+- Create initial output files

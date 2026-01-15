@@ -41,6 +41,9 @@ Scratchpad format:
 - [x] Completed item
 - [ ] Remaining item
 
+## Quality Gate Status
+[Updated by validation - see below]
+
 ## Decisions Made
 - [Decision and rationale]
 
@@ -50,6 +53,44 @@ Scratchpad format:
 ## Next Steps
 - [What to do next iteration]
 ```
+
+## Quality gates (MUST pass before LOOP_COMPLETE)
+
+Before declaring completion, ALL blocker-level quality gates must pass:
+
+### Output Completeness
+- [ ] **all_outputs_exist**: All 6 scopecraft files created
+- [ ] **vision_not_empty**: VISION_AND_STAGE_DEFINITION.md has 20+ lines
+- [ ] **roadmap_not_empty**: ROADMAP.md has 50+ lines
+
+### Content Quality
+- [ ] **phases_in_range**: ROADMAP.md has 3-5 phases (matches `^## Phase \d`)
+- [ ] **epics_have_stories**: EPICS_AND_STORIES.md has 5+ stories (matches `^#### Story`)
+- [ ] **stories_have_acceptance_criteria**: 5+ "Acceptance Criteria" sections
+- [ ] **risks_documented**: 3+ risk entries in table format
+- [ ] **metrics_defined**: "North Star Metric" section exists
+
+### No Placeholders
+- [ ] **no_todo_placeholders**: Zero `[TODO]`, `[TBD]`, `[PLACEHOLDER]` markers
+- [ ] **no_empty_brackets**: Zero empty `[ ]` template brackets (warning)
+
+### Self-Validation Process
+
+Before each iteration ends, mentally run through these checks:
+
+```
+1. Count files in scopecraft/ - must be 6
+2. Count "## Phase" headers in ROADMAP.md - must be 3-5
+3. Count "#### Story" headers in EPICS_AND_STORIES.md - must be 5+
+4. Search for [TODO], [TBD], [PLACEHOLDER] - must be 0
+5. Verify "North Star Metric" exists in METRICS_AND_PMF.md
+6. Verify risk table has 3+ rows with Technical/Product/GTM
+```
+
+If ANY blocker fails, continue iterating. Update scratchpad with:
+- Which gates failed
+- What needs to be fixed
+- Plan for next iteration
 
 ## Discovery procedure (do this first)
 
@@ -121,5 +162,8 @@ Each epic must include:
 
 When running in orchestrated mode (ralph-orchestrator compatible):
 - Iterate until outputs are complete and consistent
+- **ALL blocker quality gates must pass**
 - Use the completion promise exactly: `LOOP_COMPLETE`
 - Improve gaps rather than rewriting everything each cycle
+
+**DO NOT issue LOOP_COMPLETE if any blocker gate fails.**

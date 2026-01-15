@@ -22,12 +22,14 @@ plugins/
       product-owner.md             # Agent persona definition
     skills/
       roadmap-scopecraft/
-        SKILL.md                   # Core skill logic with scratchpad protocol
+        SKILL.md                   # Core skill logic with quality gates
         templates/                 # Output format templates
     templates/                      # ralph-orchestrator templates
       PROMPT.md                    # Task definition for ralph run
-      ralph.yml                    # Orchestrator configuration
+      ralph.yml                    # Orchestrator config with quality gates
       scratchpad.md                # Cross-iteration context template
+    hooks/
+      validate_quality_gates.py    # Quality gate validation script
     examples/
       scopecraft/                  # Sample outputs
 ```
@@ -38,6 +40,22 @@ Users invoke plugins via:
 - `/ralph-it-up-roadmap:roadmap` — One-shot roadmap generation
 - `/ralph-it-up-roadmap:roadmap-orchestrated` — Iterative mode (loops until `LOOP_COMPLETE`)
 
+## Quality Gates
+
+Quality gates are validation checks that MUST pass before `LOOP_COMPLETE`:
+
+| Gate | Requirement |
+|------|-------------|
+| `all_outputs_exist` | 6 files in scopecraft/ |
+| `phases_in_range` | 3-5 `## Phase` headers in ROADMAP.md |
+| `epics_have_stories` | 5+ `#### Story` headers |
+| `stories_have_acceptance_criteria` | 5+ "Acceptance Criteria" sections |
+| `risks_documented` | 3+ risk table rows |
+| `metrics_defined` | "North Star Metric" section exists |
+| `no_todo_placeholders` | Zero `[TODO]`/`[TBD]` markers |
+
+Run validation: `python hooks/validate_quality_gates.py`
+
 ## ralph-orchestrator Integration
 
 For autonomous iteration with ralph-orchestrator:
@@ -47,9 +65,10 @@ ralph run -a claude
 ```
 
 Key conventions:
-- **Completion promise**: `LOOP_COMPLETE` (not ROADMAP_COMPLETE)
+- **Completion promise**: `LOOP_COMPLETE` (only after quality gates pass)
 - **Scratchpad**: `.agent/scratchpad.md` for cross-iteration context
-- **Config**: `ralph.yml` with iteration/cost limits
+- **Config**: `ralph.yml` with iteration/cost limits and quality gates
+- **Validation**: `hooks/validate_quality_gates.py`
 
 ## How the Skill Works
 
@@ -58,7 +77,8 @@ Key conventions:
 3. **Reconciliation**: Resolves conflicts between PRDs (newest wins, or explicit divergence noted)
 4. **Normalization**: Converts legacy scope into Epic → Story → Acceptance Criteria structure
 5. **Output**: Writes 6 files to `./scopecraft/`
-6. **Update scratchpad**: Records progress for next iteration (orchestrated mode)
+6. **Validation**: Checks quality gates before completion
+7. **Update scratchpad**: Records progress and gate status for next iteration
 
 ## Contributing New Plugins
 
@@ -67,13 +87,15 @@ Key conventions:
 3. Add commands in `commands/` (markdown with frontmatter)
 4. Add skills in `skills/` with `SKILL.md`
 5. Add ralph-orchestrator templates in `templates/` (PROMPT.md, ralph.yml, scratchpad.md)
-6. Register in `.claude-plugin/marketplace.json`
+6. Add validation hooks in `hooks/`
+7. Register in `.claude-plugin/marketplace.json`
 
 ## Quality Standards
 
 - Commands must be deterministic and file-output driven
 - Skills define clear completion criteria (`LOOP_COMPLETE` for orchestrated mode)
+- **Quality gates must be defined and pass before completion**
 - Prefer outcomes/KRs over feature lists
 - Roadmap phases limited to 3-5 max
 - All outputs reference repo evidence (file paths) where possible
-- Scratchpad must track progress between iterations
+- Scratchpad must track progress and quality gate status between iterations

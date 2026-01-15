@@ -23,3 +23,99 @@ verbose: false
 
 # Completion marker (do not change - matches skill definition)
 completion_promise: "LOOP_COMPLETE"
+
+# =============================================================================
+# QUALITY GATES
+# =============================================================================
+# Quality gates are validation checks that MUST pass before LOOP_COMPLETE.
+# The agent will check these conditions and continue iterating if any fail.
+
+quality_gates:
+  # --- Output Completeness ---
+  - id: all_outputs_exist
+    name: "All required outputs exist"
+    description: "All 6 scopecraft files must be created"
+    check: "file_count"
+    path: "scopecraft/*.md"
+    expect: 6
+    severity: blocker  # blocker = cannot complete, warning = can complete with note
+
+  - id: vision_not_empty
+    name: "Vision document has content"
+    check: "min_lines"
+    path: "scopecraft/VISION_AND_STAGE_DEFINITION.md"
+    min: 20
+    severity: blocker
+
+  - id: roadmap_not_empty
+    name: "Roadmap has phases"
+    check: "min_lines"
+    path: "scopecraft/ROADMAP.md"
+    min: 50
+    severity: blocker
+
+  # --- Content Quality ---
+  - id: phases_in_range
+    name: "Roadmap has 3-5 phases"
+    check: "pattern_count"
+    path: "scopecraft/ROADMAP.md"
+    pattern: "^## Phase \\d"
+    min: 3
+    max: 5
+    severity: blocker
+
+  - id: epics_have_stories
+    name: "Epics contain user stories"
+    check: "pattern_count"
+    path: "scopecraft/EPICS_AND_STORIES.md"
+    pattern: "^#### Story"
+    min: 5
+    severity: blocker
+
+  - id: stories_have_acceptance_criteria
+    name: "Stories have acceptance criteria"
+    check: "pattern_count"
+    path: "scopecraft/EPICS_AND_STORIES.md"
+    pattern: "Acceptance Criteria"
+    min: 5
+    severity: blocker
+
+  - id: risks_documented
+    name: "Risk register has entries"
+    check: "pattern_count"
+    path: "scopecraft/RISKS_AND_DEPENDENCIES.md"
+    pattern: "\\| .+ \\| (Technical|Product|GTM)"
+    min: 3
+    severity: blocker
+
+  - id: metrics_defined
+    name: "North star metric defined"
+    check: "pattern_exists"
+    path: "scopecraft/METRICS_AND_PMF.md"
+    pattern: "North Star Metric"
+    severity: blocker
+
+  # --- No Placeholders ---
+  - id: no_todo_placeholders
+    name: "No TODO placeholders remain"
+    check: "pattern_count"
+    path: "scopecraft/*.md"
+    pattern: "\\[TODO\\]|\\[TBD\\]|\\[PLACEHOLDER\\]"
+    max: 0
+    severity: blocker
+
+  - id: no_empty_brackets
+    name: "No empty template brackets"
+    check: "pattern_count"
+    path: "scopecraft/*.md"
+    pattern: "\\[\\s*\\]"
+    max: 0
+    severity: warning
+
+  # --- Cross-Document Consistency ---
+  - id: open_questions_exist
+    name: "Open questions documented"
+    check: "min_lines"
+    path: "scopecraft/OPEN_QUESTIONS.md"
+    min: 10
+    severity: warning
