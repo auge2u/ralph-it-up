@@ -54,7 +54,32 @@ Quality gates are validation checks that MUST pass before `LOOP_COMPLETE`:
 | `metrics_defined` | "North Star Metric" section exists |
 | `no_todo_placeholders` | Zero `[TODO]`/`[TBD]` markers |
 
-Run validation: `python hooks/validate_quality_gates.py`
+### Required Output Files (6 total)
+
+```
+scopecraft/
+├── VISION_AND_STAGE_DEFINITION.md
+├── ROADMAP.md
+├── EPICS_AND_STORIES.md
+├── RISKS_AND_DEPENDENCIES.md
+├── METRICS_AND_PMF.md
+└── OPEN_QUESTIONS.md
+```
+
+### Validation
+
+```bash
+# From project root (uses default gates)
+python plugins/ralph-it-up-roadmap/hooks/validate_quality_gates.py
+
+# With config file (requires PyYAML)
+python plugins/ralph-it-up-roadmap/hooks/validate_quality_gates.py --config ralph.yml
+
+# Generate markdown report
+python plugins/ralph-it-up-roadmap/hooks/validate_quality_gates.py --markdown
+
+# Exit codes: 0=pass, 1=blocker failed, 2=warning only
+```
 
 ## ralph-orchestrator Integration
 
@@ -79,6 +104,26 @@ Key conventions:
 5. **Output**: Writes 6 files to `./scopecraft/`
 6. **Validation**: Checks quality gates before completion
 7. **Update scratchpad**: Records progress and gate status for next iteration
+
+## Plugin Architecture
+
+```
+Command (roadmap.md)           → References skill + agent
+    ↓
+Agent (product-owner.md)       → Defines persona for execution
+    ↓
+Skill (SKILL.md)               → Core logic, discovery, quality gates
+    ↓
+Templates (templates/*.md)     → Output format specifications
+    ↓
+Hooks (validate_quality_gates.py) → Automated validation
+```
+
+Key relationships:
+- Commands declare which skill and agent to use via YAML frontmatter
+- Skills define the execution logic and reference templates for output format
+- `ralph.yml` overrides default quality gates when present
+- Scratchpad (`.agent/scratchpad.md`) persists state across orchestrator iterations
 
 ## Contributing New Plugins
 
