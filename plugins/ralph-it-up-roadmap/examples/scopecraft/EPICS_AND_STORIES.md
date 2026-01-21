@@ -37,6 +37,20 @@
 **Complexity:** M
 **Risk:** Medium
 
+#### Story 3: Plugin Discovery
+**As a** Claude Code user
+**I want** to search and browse available plugins
+**So that** I can find plugins relevant to my needs
+
+**Acceptance Criteria:**
+- [ ] `/plugin marketplace list` shows available plugins
+- [ ] Search filters by category and tags
+- [ ] Plugin descriptions and ratings visible
+
+**Dependencies:** Marketplace manifest
+**Complexity:** M
+**Risk:** Low
+
 ---
 
 ## Epic: Roadmap Generation Quality
@@ -58,6 +72,20 @@
 
 **Dependencies:** None
 **Complexity:** M
+**Risk:** Low
+
+#### Story 2: Quality Gate Validation
+**As a** plugin developer
+**I want** automated quality checks on generated roadmaps
+**So that** outputs meet minimum quality standards
+
+**Acceptance Criteria:**
+- [ ] Validator script checks all gates
+- [ ] Clear pass/fail output with details
+- [ ] Exit codes for CI integration
+
+**Dependencies:** Template coverage
+**Complexity:** S
 **Risk:** Low
 
 ---
