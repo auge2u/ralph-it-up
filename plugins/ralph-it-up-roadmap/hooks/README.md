@@ -45,14 +45,17 @@ python validate_quality_gates.py --scratchpad .agent/scratchpad.md
 
 ### Integration with ralph-orchestrator
 
-Add to your workflow as a post-iteration hook:
+**v2.0.0 (current):** Quality gates are embedded in hat instructions. Use this script for:
+- Manual validation before committing
+- CI pipeline checks
+- Debugging gate failures
 
-```yaml
-# ralph.yml
-hooks:
-  post_iteration:
-    - python hooks/validate_quality_gates.py --scratchpad .agent/scratchpad.md
+```bash
+# Validate outputs after ralph completes
+python validate_quality_gates.py --output-dir ./scopecraft --markdown
 ```
+
+**v1.x (legacy):** Could be added as a post-iteration hook in ralph.yml.
 
 ### Quality Gate Types
 

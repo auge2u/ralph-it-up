@@ -35,23 +35,24 @@ A skill-driven workflow that:
 /ralph-it-up-roadmap:roadmap-orchestrated
 ```
 
-### With ralph-orchestrator
+### With ralph-orchestrator (v2.0.0)
 
-For fully autonomous iteration:
+For fully autonomous iteration with [ralph-orchestrator v2](https://github.com/mikeyobrien/ralph-orchestrator):
 
 ```bash
 # Install ralph-orchestrator
 pip install ralph-orchestrator
 
 # Copy templates to your project
-cp plugins/ralph-it-up-roadmap/templates/PROMPT.md ./PROMPT.md
 cp plugins/ralph-it-up-roadmap/templates/ralph.yml ./ralph.yml
 mkdir -p .agent
 cp plugins/ralph-it-up-roadmap/templates/scratchpad.md ./.agent/scratchpad.md
 
-# Run
-ralph run -a claude
+# Run (v2 uses hat-based config, no -a flag needed)
+ralph run
 ```
+
+> **Note:** v2 uses hat-based orchestration with instructions embedded in `ralph.yml`. The separate `PROMPT.md` is optional and provided for standalone use.
 
 ## Outputs
 
@@ -66,17 +67,18 @@ Including:
 - `METRICS_AND_PMF.md`
 - `OPEN_QUESTIONS.md`
 
-## ralph-orchestrator Compatibility
+## ralph-orchestrator Compatibility (v2.0.0)
 
-This plugin is fully compatible with [ralph-orchestrator](https://github.com/mikeyobrien/ralph-orchestrator):
+This plugin is fully compatible with [ralph-orchestrator v2](https://github.com/mikeyobrien/ralph-orchestrator):
 
 | Feature | Support |
 |---------|---------|
 | Completion promise | `LOOP_COMPLETE` |
 | Scratchpad | `.agent/scratchpad.md` |
-| PROMPT.md | Template included |
-| ralph.yml | Config template included |
-| Git checkpointing | Supported |
+| Hat-based orchestration | `product_owner` hat with embedded instructions |
+| ralph.yml | v2 config template included |
+| Multi-backend | claude (default), gemini, codex, etc. |
+| Quality gates | Embedded in hat instructions |
 
 ## License
 

@@ -1,121 +1,112 @@
-# ralph-orchestrator configuration for ralph-it-up-roadmap
+# ralph-orchestrator v2.0.0 configuration for ralph-it-up-roadmap
 # https://github.com/mikeyobrien/ralph-orchestrator
 
-# Agent selection (claude recommended for roadmap generation)
-agent: claude
+cli:
+  backend: "claude"
 
-# Task file (copy PROMPT.md to your project root)
-prompt_file: PROMPT.md
+event_loop:
+  completion_promise: "LOOP_COMPLETE"
+  max_iterations: 15
+  max_runtime_seconds: 3600  # 1 hour max
 
-# Iteration limits
-max_iterations: 15          # Roadmap generation typically needs 5-10 iterations
-max_runtime: 3600           # 1 hour max runtime
-
-# Cost controls
-max_tokens: 500000          # Token budget per run
-max_cost: 25.0              # USD cost ceiling
-
-# Git checkpointing (recommended for recovery)
-checkpoint_interval: 3      # Commit progress every 3 iterations
-
-# Output verbosity
-verbose: false
-
-# Completion marker (do not change - matches skill definition)
-completion_promise: "LOOP_COMPLETE"
+# Scratchpad for cross-iteration memory
+scratchpad: ".agent/scratchpad.md"
 
 # =============================================================================
-# QUALITY GATES
+# HAT-BASED ORCHESTRATION
 # =============================================================================
-# Quality gates are validation checks that MUST pass before LOOP_COMPLETE.
-# The agent will check these conditions and continue iterating if any fail.
+# The product-owner hat handles roadmap generation with quality gates
+# embedded in instructions (v2 pattern).
 
-quality_gates:
-  # --- Output Completeness ---
-  - id: all_outputs_exist
-    name: "All required outputs exist"
-    description: "All 6 scopecraft files must be created"
-    check: "file_count"
-    path: "scopecraft/*.md"
-    expect: 6
-    severity: blocker  # blocker = cannot complete, warning = can complete with note
+hats:
+  product_owner:
+    name: "🎯 Product Owner"
+    triggers: ["task.start", "iteration.continue"]
+    publishes: ["roadmap.complete"]
 
-  - id: vision_not_empty
-    name: "Vision document has content"
-    check: "min_lines"
-    path: "scopecraft/VISION_AND_STAGE_DEFINITION.md"
-    min: 20
-    severity: blocker
+    instructions: |
+      You are a **product owner** generating a comprehensive roadmap for this repository.
 
-  - id: roadmap_not_empty
-    name: "Roadmap has phases"
-    check: "min_lines"
-    path: "scopecraft/ROADMAP.md"
-    min: 50
-    severity: blocker
+      ## Objective
 
-  # --- Content Quality ---
-  - id: phases_in_range
-    name: "Roadmap has 3-5 phases"
-    check: "pattern_count"
-    path: "scopecraft/ROADMAP.md"
-    pattern: "^## Phase \\d"
-    min: 3
-    max: 5
-    severity: blocker
+      Scan the codebase and documentation to produce a complete maturity roadmap
+      that moves the project from its current stage (MVP/early release) to the
+      next major stage.
 
-  - id: epics_have_stories
-    name: "Epics contain user stories"
-    check: "pattern_count"
-    path: "scopecraft/EPICS_AND_STORIES.md"
-    pattern: "^#### Story"
-    min: 5
-    severity: blocker
+      ## Instructions
 
-  - id: stories_have_acceptance_criteria
-    name: "Stories have acceptance criteria"
-    check: "pattern_count"
-    path: "scopecraft/EPICS_AND_STORIES.md"
-    pattern: "Acceptance Criteria"
-    min: 5
-    severity: blocker
+      1. **Scratchpad Protocol**
+         - Read `.agent/scratchpad.md` at start of each iteration
+         - Update scratchpad with progress after each iteration
+         - Track: completed items, remaining work, blockers, decisions
 
-  - id: risks_documented
-    name: "Risk register has entries"
-    check: "pattern_count"
-    path: "scopecraft/RISKS_AND_DEPENDENCIES.md"
-    pattern: "\\| .+ \\| (Technical|Product|GTM)"
-    min: 3
-    severity: blocker
+      2. **Discovery Phase**
+         - Scan `/docs` for PRDs (initial + historical)
+         - Review `README`, `CHANGELOG`, ADRs, architecture docs
+         - Inventory open TODOs, issues, backlog files
+         - Identify current maturity stage
 
-  - id: metrics_defined
-    name: "North star metric defined"
-    check: "pattern_exists"
-    path: "scopecraft/METRICS_AND_PMF.md"
-    pattern: "North Star Metric"
-    severity: blocker
+      3. **Output Phase**
+         Create the following files under `./scopecraft/`:
+         - `VISION_AND_STAGE_DEFINITION.md`
+         - `ROADMAP.md` (3-5 phases max)
+         - `EPICS_AND_STORIES.md`
+         - `RISKS_AND_DEPENDENCIES.md`
+         - `METRICS_AND_PMF.md`
+         - `OPEN_QUESTIONS.md`
 
-  # --- No Placeholders ---
-  - id: no_todo_placeholders
-    name: "No TODO placeholders remain"
-    check: "pattern_count"
-    path: "scopecraft/*.md"
-    pattern: "\\[TODO\\]|\\[TBD\\]|\\[PLACEHOLDER\\]"
-    max: 0
-    severity: blocker
+      4. **Quality Standards**
+         - Be explicit, practical, senior-engineer-friendly
+         - Optimize for PMF and delivery feasibility
+         - Include acceptance criteria for all stories
+         - Reference repo evidence (file paths) where possible
 
-  - id: no_empty_brackets
-    name: "No empty template brackets"
-    check: "pattern_count"
-    path: "scopecraft/*.md"
-    pattern: "\\[\\s*\\]"
-    max: 0
-    severity: warning
+      ## Quality Gates (MUST PASS before LOOP_COMPLETE)
 
-  # --- Cross-Document Consistency ---
-  - id: open_questions_exist
-    name: "Open questions documented"
-    check: "min_lines"
-    path: "scopecraft/OPEN_QUESTIONS.md"
-    min: 10
-    severity: warning
+      Before completing, validate ALL of these conditions:
+
+      | Gate | Requirement |
+      |------|-------------|
+      | all_outputs_exist | 6 files in scopecraft/ |
+      | phases_in_range | 3-5 `## Phase` headers in ROADMAP.md |
+      | epics_have_stories | 5+ `#### Story` headers |
+      | stories_have_acceptance_criteria | 5+ "Acceptance Criteria" sections |
+      | risks_documented | 3+ risk table rows with Technical/Product/GTM |
+      | metrics_defined | "North Star Metric" section exists |
+      | no_todo_placeholders | Zero `[TODO]`, `[TBD]`, `[PLACEHOLDER]` markers |
+
+      ### Self-Validation Checklist
+
+      Run through this checklist before each completion attempt:
+      ```
+      [ ] scopecraft/ has exactly 6 .md files
+      [ ] ROADMAP.md has 3-5 "## Phase N" sections
+      [ ] EPICS_AND_STORIES.md has 5+ "#### Story" sections
+      [ ] Each story has "Acceptance Criteria:" section
+      [ ] RISKS_AND_DEPENDENCIES.md has 3+ table rows with risk types
+      [ ] METRICS_AND_PMF.md has "North Star Metric" section
+      [ ] No [TODO], [TBD], or [PLACEHOLDER] markers anywhere
+      ```
+
+      If ANY check fails -> continue iterating, update scratchpad with failures.
+
+      ## Completion
+
+      When all outputs exist, are internally consistent, and ALL quality gates pass:
+
+      ```
+      LOOP_COMPLETE
+      ```
+
+      **DO NOT issue LOOP_COMPLETE if any quality gate fails.**
+
+# =============================================================================
+# LEGACY v1.x FIELDS (for reference, not used in v2)
+# =============================================================================
+# These fields were used in ralph-orchestrator v1.x:
+#   agent: claude
+#   prompt_file: PROMPT.md
+#   max_tokens: 500000
+#   max_cost: 25.0
+#   checkpoint_interval: 3
+#   quality_gates: [...]  # Now embedded in hat instructions

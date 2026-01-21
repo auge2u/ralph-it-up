@@ -24,9 +24,9 @@ plugins/
       roadmap-scopecraft/
         SKILL.md                   # Core skill logic with quality gates
         templates/                 # Output format templates
-    templates/                      # ralph-orchestrator templates
-      PROMPT.md                    # Task definition for ralph run
-      ralph.yml                    # Orchestrator config with quality gates
+    templates/                      # ralph-orchestrator v2 templates
+      PROMPT.md                    # Standalone instructions (v2: embedded in ralph.yml)
+      ralph.yml                    # v2 config with hat-based orchestration
       scratchpad.md                # Cross-iteration context template
     hooks/
       validate_quality_gates.py    # Quality gate validation script
@@ -81,19 +81,47 @@ python plugins/ralph-it-up-roadmap/hooks/validate_quality_gates.py --markdown
 # Exit codes: 0=pass, 1=blocker failed, 2=warning only
 ```
 
-## ralph-orchestrator Integration
+## ralph-orchestrator Integration (v2.0.0)
 
-For autonomous iteration with ralph-orchestrator:
+For autonomous iteration with ralph-orchestrator v2:
 
 ```bash
-ralph run -a claude
+# Install ralph-orchestrator
+pip install ralph-orchestrator
+
+# Copy templates to your project
+cp plugins/ralph-it-up-roadmap/templates/ralph.yml ./ralph.yml
+mkdir -p .agent
+cp plugins/ralph-it-up-roadmap/templates/scratchpad.md ./.agent/scratchpad.md
+
+# Run
+ralph run
+```
+
+### v2 Configuration Format
+
+```yaml
+cli:
+  backend: "claude"
+
+event_loop:
+  completion_promise: "LOOP_COMPLETE"
+  max_iterations: 15
+  max_runtime_seconds: 3600
+
+hats:
+  product_owner:
+    triggers: ["task.start"]
+    instructions: |
+      # Instructions embedded here (not in separate PROMPT.md)
 ```
 
 Key conventions:
+- **Hat-based orchestration**: Personas defined in `hats:` section with embedded instructions
 - **Completion promise**: `LOOP_COMPLETE` (only after quality gates pass)
 - **Scratchpad**: `.agent/scratchpad.md` for cross-iteration context
-- **Config**: `ralph.yml` with iteration/cost limits and quality gates
-- **Validation**: `hooks/validate_quality_gates.py`
+- **Quality gates**: Now embedded in hat instructions (not separate config)
+- **Validation**: `hooks/validate_quality_gates.py` still available for manual checks
 
 ## How the Skill Works
 
