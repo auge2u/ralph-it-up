@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Updated ralph-orchestrator compatibility from v2.0.0 to v2.2.0
+- Documented all 7 supported backends (claude, gemini, codex, qchat, aider, opencode, copilot)
+- Added `ralph plan` and `ralph task` session workflow commands to docs
+- Added git SHA pinning installation option for reproducible plugin installs
+
 ## [1.1.0] - 2026-01-21
 
 ### Added

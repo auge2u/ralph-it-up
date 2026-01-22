@@ -1,7 +1,15 @@
-# ralph-orchestrator v2.0.0 configuration for ralph-it-up-roadmap
+# ralph-orchestrator v2.2.0 configuration for ralph-it-up-roadmap
 # https://github.com/mikeyobrien/ralph-orchestrator
 
 cli:
+  # Supported backends (v2.2.0):
+  #   claude    - Claude Code CLI (default)
+  #   gemini    - Gemini CLI
+  #   codex     - OpenAI Codex
+  #   qchat     - AWS Q Chat
+  #   aider     - Aider
+  #   opencode  - OpenCode (added v2.0.9)
+  #   copilot   - GitHub Copilot CLI (added v2.0.8)
   backend: "claude"
 
 event_loop:

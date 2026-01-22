@@ -21,6 +21,14 @@ A skill-driven workflow that:
 /plugin install ralph-it-up-roadmap@ralph-it-up
 ```
 
+### Pin to specific version (optional)
+
+Claude Code supports pinning plugins to specific git commit SHAs for reproducible installs:
+
+```txt
+/plugin marketplace add auge2u/ralph-it-up#a309247
+```
+
 ## Run
 
 ### One-shot (Claude Code)
@@ -35,7 +43,7 @@ A skill-driven workflow that:
 /ralph-it-up-roadmap:roadmap-orchestrated
 ```
 
-### With ralph-orchestrator (v2.0.0)
+### With ralph-orchestrator (v2.2.0)
 
 For fully autonomous iteration with [ralph-orchestrator v2](https://github.com/mikeyobrien/ralph-orchestrator):
 
@@ -50,6 +58,10 @@ cp plugins/ralph-it-up-roadmap/templates/scratchpad.md ./.agent/scratchpad.md
 
 # Run (v2 uses hat-based config, no -a flag needed)
 ralph run
+
+# New in v2.0.8+: structured session workflows
+ralph plan    # Plan mode for structured planning
+ralph task    # Task mode for focused execution
 ```
 
 > **Note:** v2 uses hat-based orchestration with instructions embedded in `ralph.yml`. The separate `PROMPT.md` is optional and provided for standalone use.
@@ -67,7 +79,7 @@ Including:
 - `METRICS_AND_PMF.md`
 - `OPEN_QUESTIONS.md`
 
-## ralph-orchestrator Compatibility (v2.0.0)
+## ralph-orchestrator Compatibility (v2.2.0)
 
 This plugin is fully compatible with [ralph-orchestrator v2](https://github.com/mikeyobrien/ralph-orchestrator):
 
@@ -77,8 +89,9 @@ This plugin is fully compatible with [ralph-orchestrator v2](https://github.com/
 | Scratchpad | `.agent/scratchpad.md` |
 | Hat-based orchestration | `product_owner` hat with embedded instructions |
 | ralph.yml | v2 config template included |
-| Multi-backend | claude (default), gemini, codex, etc. |
+| Multi-backend | claude, gemini, codex, qchat, aider, opencode, copilot |
 | Quality gates | Embedded in hat instructions |
+| Session workflows | `ralph plan` / `ralph task` (v2.0.8+) |
 
 ## License
 

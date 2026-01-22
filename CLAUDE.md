@@ -81,7 +81,7 @@ python plugins/ralph-it-up-roadmap/hooks/validate_quality_gates.py --markdown
 # Exit codes: 0=pass, 1=blocker failed, 2=warning only
 ```
 
-## ralph-orchestrator Integration (v2.0.0)
+## ralph-orchestrator Integration (v2.2.0)
 
 For autonomous iteration with ralph-orchestrator v2:
 
@@ -96,12 +96,17 @@ cp plugins/ralph-it-up-roadmap/templates/scratchpad.md ./.agent/scratchpad.md
 
 # Run
 ralph run
+
+# Alternative session workflows (v2.0.8+)
+ralph plan    # Structured planning mode
+ralph task    # Focused task execution
 ```
 
 ### v2 Configuration Format
 
 ```yaml
 cli:
+  # Supported backends: claude, gemini, codex, qchat, aider, opencode, copilot
   backend: "claude"
 
 event_loop:
@@ -122,6 +127,7 @@ Key conventions:
 - **Scratchpad**: `.agent/scratchpad.md` for cross-iteration context
 - **Quality gates**: Now embedded in hat instructions (not separate config)
 - **Validation**: `hooks/validate_quality_gates.py` still available for manual checks
+- **Multi-backend**: Supports 7 backends including OpenCode (v2.0.9) and Copilot (v2.0.8)
 
 ## How the Skill Works
 
