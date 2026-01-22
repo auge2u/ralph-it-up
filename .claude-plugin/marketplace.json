@@ -9,7 +9,7 @@
     {
       "name": "ralph-it-up-roadmap",
       "description": "Roadmap ScopeCraft: scan PRDs/docs + legacy scope and generate a comprehensive maturity roadmap.",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "author": { "name": "auge2u" },
       "source": "./plugins/ralph-it-up-roadmap",
       "category": "productivity",

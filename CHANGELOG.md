@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-01-22
+
 ### Changed
 - Updated ralph-orchestrator compatibility from v2.0.0 to v2.2.0
 - Documented all 7 supported backends (claude, gemini, codex, qchat, aider, opencode, copilot)
@@ -35,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CLAUDE.md with project architecture and commands
 - CONTRIBUTING.md with plugin contribution guidelines
 
-[Unreleased]: https://github.com/auge2u/ralph-it-up/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/auge2u/ralph-it-up/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/auge2u/ralph-it-up/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/auge2u/ralph-it-up/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/auge2u/ralph-it-up/releases/tag/v1.0.0
