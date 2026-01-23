@@ -19,9 +19,11 @@ plugins/
     .claude-plugin/plugin.json     # Plugin manifest (name, version, license)
     commands/
       roadmap.md                   # One-shot slash command
+      roadmap-native.md            # Native Claude Code loop (no dependencies)
       roadmap-orchestrated.md      # Loop mode (ralph-orchestrator compatible)
     agents/
-      product-owner.md             # Agent persona definition
+      product-owner.md             # Agent persona for one-shot mode
+      roadmap-orchestrator.md      # Native loop orchestrator agent
     skills/
       roadmap-scopecraft/
         SKILL.md                   # Core skill logic, quality gates, discovery procedure
@@ -32,6 +34,7 @@ plugins/
       PROMPT.md                    # Optional standalone instructions
     hooks/
       validate_quality_gates.py    # Quality gate validation (Python 3, optional PyYAML)
+      validate-gates-handler.sh    # Native bash validation (no dependencies)
     examples/
       scopecraft/                  # Sample outputs for reference
 ```
@@ -40,7 +43,8 @@ plugins/
 
 Users invoke plugins via:
 - `/ralph-it-up-roadmap:roadmap` — One-shot roadmap generation
-- `/ralph-it-up-roadmap:roadmap-orchestrated` — Iterative mode (loops until `LOOP_COMPLETE`)
+- `/ralph-it-up-roadmap:roadmap-native` — Native Claude Code loop (no dependencies, recommended)
+- `/ralph-it-up-roadmap:roadmap-orchestrated` — External orchestrator mode (ralph-orchestrator)
 
 ## Quality Gates
 
@@ -69,8 +73,23 @@ scopecraft/
 
 ### Validation
 
+**Native bash validator (recommended, zero dependencies):**
+
 ```bash
-# From project root (uses default gates, no dependencies required)
+# Human-readable output
+./plugins/ralph-it-up-roadmap/hooks/validate-gates-handler.sh
+
+# JSON output (for scripts/CI)
+./plugins/ralph-it-up-roadmap/hooks/validate-gates-handler.sh --json
+
+# Quiet mode (exit code only)
+./plugins/ralph-it-up-roadmap/hooks/validate-gates-handler.sh --quiet
+```
+
+**Python validator (more features, optional PyYAML):**
+
+```bash
+# From project root (uses default gates)
 python plugins/ralph-it-up-roadmap/hooks/validate_quality_gates.py
 
 # With config file (requires: pip install pyyaml)
@@ -78,12 +97,62 @@ python plugins/ralph-it-up-roadmap/hooks/validate_quality_gates.py --config ralp
 
 # Generate markdown report (for scratchpad updates)
 python plugins/ralph-it-up-roadmap/hooks/validate_quality_gates.py --markdown
-
-# Append results to scratchpad
-python plugins/ralph-it-up-roadmap/hooks/validate_quality_gates.py --scratchpad .agent/scratchpad.md
 ```
 
-Exit codes: `0`=pass, `1`=blocker failed, `2`=warning only
+Exit codes: `0`=pass, `1`=blocker failed, `2`=warning/not found
+
+## Orchestration Modes
+
+Three ways to run iterative roadmap generation:
+
+| Mode | Command | Dependencies | Best For |
+|------|---------|--------------|----------|
+| **Native** (recommended) | `/roadmap-native` | None | Quick setup, minimal dependencies |
+| **External** | `/roadmap-orchestrated` | `ralph-orchestrator` | CI/CD, multi-backend support |
+| **One-shot** | `/roadmap` | None | Simple projects, manual iteration |
+
+### Native Mode (New in v1.2.0)
+
+Uses the built-in `roadmap-orchestrator` agent for autonomous looping:
+
+```bash
+/ralph-it-up-roadmap:roadmap-native
+```
+
+Features:
+- Zero external dependencies
+- Built-in iteration limit (15 max)
+- Automatic quality gate validation
+- Scratchpad memory across iterations
+- JSON validation results in `.agent/validation-results.json`
+
+### Migration from ralph-orchestrator
+
+If you're currently using `ralph-orchestrator`, you can switch to native mode:
+
+**Before (external orchestrator):**
+```bash
+pip install ralph-orchestrator
+cp templates/ralph.yml ./
+ralph run
+```
+
+**After (native mode):**
+```bash
+/ralph-it-up-roadmap:roadmap-native
+```
+
+Both modes:
+- Use the same skill (`roadmap-scopecraft`)
+- Produce the same outputs in `./scopecraft/`
+- Follow the same quality gates
+- Use `.agent/scratchpad.md` for cross-iteration memory
+
+**When to keep using ralph-orchestrator:**
+- CI/CD pipeline integration
+- Multi-backend support (Gemini, Codex, etc.)
+- Custom iteration limits or timeouts
+- Existing ralph.yml configurations
 
 ## ralph-orchestrator Integration (v2.2.0)
 
@@ -146,22 +215,23 @@ Key conventions:
 ## Plugin Architecture
 
 ```
-Command (roadmap.md)           → References skill + agent
+Command (roadmap-native.md)         → References skill + orchestrator agent
     ↓
-Agent (product-owner.md)       → Defines persona for execution
+Agent (roadmap-orchestrator.md)     → Loop control, validation, iteration
     ↓
-Skill (SKILL.md)               → Core logic, discovery, quality gates
+Skill (SKILL.md)                    → Core logic, discovery, quality gates
     ↓
-Templates (templates/*.md)     → Output format specifications
+Templates (templates/*.md)          → Output format specifications
     ↓
-Hooks (validate_quality_gates.py) → Automated validation
+Hooks (validate-gates-handler.sh)   → Native bash validation
 ```
 
 Key relationships:
 - Commands declare which skill and agent to use via YAML frontmatter
+- **Native mode**: `roadmap-orchestrator` agent handles loop control
+- **External mode**: `ralph-orchestrator` calls Claude Code as backend
 - Skills define the execution logic and reference templates for output format
-- `ralph.yml` overrides default quality gates when present
-- Scratchpad (`.agent/scratchpad.md`) persists state across orchestrator iterations
+- Scratchpad (`.agent/scratchpad.md`) persists state across iterations
 
 ## Contributing New Plugins
 
