@@ -6,32 +6,34 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **ralph-it-up** is a Claude Code plugin marketplace for AI-powered product roadmap generation. It transforms messy software projects (PRDs, legacy tasks, docs) into structured, product-owner scoped roadmaps for moving from MVP/early release to the next major stage.
 
-**ralph-orchestrator compatible** — designed to work with [ralph-orchestrator](https://github.com/mikeyobrien/ralph-orchestrator) for autonomous iteration.
+**Current version:** 1.1.1 (see `.claude-plugin/marketplace.json`)
+
+**ralph-orchestrator compatible** — designed to work with [ralph-orchestrator v2.2.0+](https://github.com/mikeyobrien/ralph-orchestrator) for autonomous iteration.
 
 ## Repository Structure
 
 ```
-.claude-plugin/marketplace.json    # Marketplace registry (lists available plugins)
+.claude-plugin/marketplace.json    # Marketplace registry (version, plugins list)
 plugins/
   ralph-it-up-roadmap/
-    .claude-plugin/plugin.json     # Plugin manifest
-    commands/                       # User-invocable slash commands
-      roadmap.md                   # One-shot roadmap generation
-      roadmap-orchestrated.md      # Iterative loop mode (ralph-orchestrator compatible)
+    .claude-plugin/plugin.json     # Plugin manifest (name, version, license)
+    commands/
+      roadmap.md                   # One-shot slash command
+      roadmap-orchestrated.md      # Loop mode (ralph-orchestrator compatible)
     agents/
       product-owner.md             # Agent persona definition
     skills/
       roadmap-scopecraft/
-        SKILL.md                   # Core skill logic with quality gates
-        templates/                 # Output format templates
+        SKILL.md                   # Core skill logic, quality gates, discovery procedure
+        templates/                 # Output format templates (7 files)
     templates/                      # ralph-orchestrator v2 templates
-      PROMPT.md                    # Standalone instructions (v2: embedded in ralph.yml)
       ralph.yml                    # v2 config with hat-based orchestration
       scratchpad.md                # Cross-iteration context template
+      PROMPT.md                    # Optional standalone instructions
     hooks/
-      validate_quality_gates.py    # Quality gate validation script
+      validate_quality_gates.py    # Quality gate validation (Python 3, optional PyYAML)
     examples/
-      scopecraft/                  # Sample outputs
+      scopecraft/                  # Sample outputs for reference
 ```
 
 ## Commands
@@ -42,17 +44,16 @@ Users invoke plugins via:
 
 ## Quality Gates
 
-Quality gates are validation checks that MUST pass before `LOOP_COMPLETE`:
+Quality gates are validation checks that MUST pass before `LOOP_COMPLETE`. These are defined in `validate_quality_gates.py:DEFAULT_GATES`:
 
 | Gate | Requirement |
 |------|-------------|
-| `all_outputs_exist` | 6 files in scopecraft/ |
-| `phases_in_range` | 3-5 `## Phase` headers in ROADMAP.md |
-| `epics_have_stories` | 5+ `#### Story` headers |
-| `stories_have_acceptance_criteria` | 5+ "Acceptance Criteria" sections |
-| `risks_documented` | 3+ risk table rows |
-| `metrics_defined` | "North Star Metric" section exists |
-| `no_todo_placeholders` | Zero `[TODO]`/`[TBD]` markers |
+| `all_outputs_exist` | 6 `.md` files in scopecraft/ |
+| `phases_in_range` | 3-5 `## Phase \d` headers in ROADMAP.md |
+| `stories_have_acceptance_criteria` | 5+ "Acceptance Criteria" sections in EPICS_AND_STORIES.md |
+| `risks_documented` | 3+ risk table rows with Technical/Product/GTM types |
+| `metrics_defined` | "North Star Metric" section exists in METRICS_AND_PMF.md |
+| `no_todo_placeholders` | Zero `[TODO]`/`[TBD]`/`[PLACEHOLDER]` markers across all outputs |
 
 ### Required Output Files (6 total)
 
@@ -69,17 +70,20 @@ scopecraft/
 ### Validation
 
 ```bash
-# From project root (uses default gates)
+# From project root (uses default gates, no dependencies required)
 python plugins/ralph-it-up-roadmap/hooks/validate_quality_gates.py
 
-# With config file (requires PyYAML)
+# With config file (requires: pip install pyyaml)
 python plugins/ralph-it-up-roadmap/hooks/validate_quality_gates.py --config ralph.yml
 
-# Generate markdown report
+# Generate markdown report (for scratchpad updates)
 python plugins/ralph-it-up-roadmap/hooks/validate_quality_gates.py --markdown
 
-# Exit codes: 0=pass, 1=blocker failed, 2=warning only
+# Append results to scratchpad
+python plugins/ralph-it-up-roadmap/hooks/validate_quality_gates.py --scratchpad .agent/scratchpad.md
 ```
+
+Exit codes: `0`=pass, `1`=blocker failed, `2`=warning only
 
 ## ralph-orchestrator Integration (v2.2.0)
 
@@ -162,12 +166,12 @@ Key relationships:
 ## Contributing New Plugins
 
 1. Create `plugins/<plugin-name>/`
-2. Add `.claude-plugin/plugin.json` manifest
-3. Add commands in `commands/` (markdown with frontmatter)
-4. Add skills in `skills/` with `SKILL.md`
-5. Add ralph-orchestrator templates in `templates/` (PROMPT.md, ralph.yml, scratchpad.md)
-6. Add validation hooks in `hooks/`
-7. Register in `.claude-plugin/marketplace.json`
+2. Add `.claude-plugin/plugin.json` manifest (name, version, author, license)
+3. Add commands in `commands/` (markdown with YAML frontmatter referencing skill + agent)
+4. Add skills in `skills/<skill-name>/SKILL.md`
+5. Add ralph-orchestrator templates in `templates/` (ralph.yml, scratchpad.md)
+6. Add validation hooks in `hooks/` (Python scripts with exit codes)
+7. Register in `.claude-plugin/marketplace.json` with version and metadata
 
 ## Quality Standards
 
