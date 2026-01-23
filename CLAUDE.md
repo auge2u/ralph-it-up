@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **ralph-it-up** is a Claude Code plugin marketplace for AI-powered product roadmap generation. It transforms messy software projects (PRDs, legacy tasks, docs) into structured, product-owner scoped roadmaps for moving from MVP/early release to the next major stage.
 
-**Current version:** 1.1.1 (see `.claude-plugin/marketplace.json`)
+**Current version:** 1.2.0 (see `.claude-plugin/marketplace.json`)
 
 **ralph-orchestrator compatible** — designed to work with [ralph-orchestrator v2.2.0+](https://github.com/mikeyobrien/ralph-orchestrator) for autonomous iteration.
 

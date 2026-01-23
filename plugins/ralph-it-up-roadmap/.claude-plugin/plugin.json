@@ -1,7 +1,7 @@
 {
   "name": "ralph-it-up-roadmap",
   "description": "Product-owner skillset to generate a full-scope roadmap from an existing repo/docs/PRDs and legacy tasks, with an orchestration-friendly loop mode.",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "author": { "name": "auge2u" },
   "license": "MIT",
   "homepage": "https://github.com/auge2u/ralph-it-up",
