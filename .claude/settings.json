@@ -1,4 +1,33 @@
 {
-  "commit": "",
-  "pr": ""
+  "permissions": {
+    "allow": [
+      "Bash(./plugins/ralph-it-up-roadmap/hooks/validate-gates-handler.sh*)",
+      "Bash(python plugins/ralph-it-up-roadmap/hooks/validate_quality_gates.py*)",
+      "Bash(git status*)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git branch*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(ls*)",
+      "Bash(find*:*.md)",
+      "Bash(grep*:scopecraft/*)",
+      "Bash(wc*)",
+      "Bash(cat*:scopecraft/*)",
+      "Bash(head*:scopecraft/*)",
+      "Bash(tail*:scopecraft/*)"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(git push --force*)",
+      "Bash(git reset --hard*)",
+      "Bash(chmod 777*)"
+    ]
+  },
+  "commit": {
+    "template": "chore(roadmap): {summary}\n\n{body}\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
+  },
+  "pr": {
+    "template": "## Summary\n\n{summary}\n\n## Changes\n\n{changes}\n\n## Quality Gates\n\n- [ ] All 6 scopecraft files validated\n- [ ] Quality gates pass (`./plugins/ralph-it-up-roadmap/hooks/validate-gates-handler.sh`)\n\n---\n🤖 Generated with [Claude Code](https://claude.ai/code)"
+  }
 }

@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-01-27
+
+### Added
+- Native Claude Code orchestration mode (`/ralph-it-up-roadmap:roadmap-native`)
+- `roadmap-orchestrator` agent for autonomous loop control without external dependencies
+- Native bash validation hook (`validate-gates-handler.sh`) - zero dependencies
+- JSON output mode for validation hooks (`--json` flag)
+- Quiet mode for CI/CD validation (`--quiet` flag)
+- `.agent/validation-results.json` output for programmatic gate status
+
+### Changed
+- Improved CLAUDE.md accuracy and clarity
+- Updated tooling configuration in `.claude/settings.json`
+
+### Documentation
+- Added migration guide from ralph-orchestrator to native mode
+- Documented all three orchestration modes (one-shot, native, external)
+
 ## [1.1.1] - 2026-01-22
 
 ### Changed
@@ -37,7 +55,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CLAUDE.md with project architecture and commands
 - CONTRIBUTING.md with plugin contribution guidelines
 
-[Unreleased]: https://github.com/auge2u/ralph-it-up/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/auge2u/ralph-it-up/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/auge2u/ralph-it-up/compare/v1.1.1...v1.2.0
 [1.1.1]: https://github.com/auge2u/ralph-it-up/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/auge2u/ralph-it-up/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/auge2u/ralph-it-up/releases/tag/v1.0.0
