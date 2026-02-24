@@ -37,6 +37,10 @@ plugins/
       validate-gates-handler.sh    # Native bash validation (no dependencies)
     examples/
       scopecraft/                  # Sample outputs for reference
+.agent/                            # Created at runtime (gitignored)
+  scratchpad.md                    # Cross-iteration memory
+  validation-results.json          # Last validation run results
+scopecraft/                        # Generated outputs (created at runtime)
 ```
 
 ## Commands
@@ -100,6 +104,8 @@ python plugins/ralph-it-up-roadmap/hooks/validate_quality_gates.py --markdown
 ```
 
 Exit codes: `0`=pass, `1`=blocker failed, `2`=warning/not found
+
+Both validation scripts are pre-approved in `.claude/settings.json` and can run without user confirmation.
 
 ## Orchestration Modes
 
@@ -232,6 +238,27 @@ Key relationships:
 - **External mode**: `ralph-orchestrator` calls Claude Code as backend
 - Skills define the execution logic and reference templates for output format
 - Scratchpad (`.agent/scratchpad.md`) persists state across iterations
+
+## Release Process
+
+Version numbers must stay in sync across `plugins/ralph-it-up-roadmap/.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`.
+
+```bash
+# Bump version (updates both JSON files + CHANGELOG.md)
+./scripts/bump-version.sh 1.3.0
+
+# Bump and create git tag in one step
+./scripts/bump-version.sh 1.3.0 --tag
+```
+
+Full release steps:
+1. Add release notes under `## [Unreleased]` in `CHANGELOG.md`
+2. Run `./scripts/bump-version.sh <version> --tag`
+3. `git add -A && git commit -m "Release v<version>"`
+4. `git push && git push --tags`
+5. Create GitHub release from the tag
+
+Versioning: MAJOR = breaking API/output changes, MINOR = new features/plugins, PATCH = fixes/docs.
 
 ## Contributing New Plugins
 
