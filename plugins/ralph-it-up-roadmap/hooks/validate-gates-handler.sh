@@ -159,6 +159,41 @@ else
   all_passed=false
 fi
 
+# Gate 7: roadmap_has_content (ROADMAP.md >= 50 lines)
+if [[ -f "$roadmap_file" ]]; then
+  line_count=$(wc -l < "$roadmap_file" | tr -d ' ')
+  if [[ "$line_count" -ge 50 ]]; then
+    gates[roadmap_has_content]="PASS"
+    gate_details[roadmap_has_content]="$line_count lines"
+  else
+    gates[roadmap_has_content]="FAIL"
+    gate_details[roadmap_has_content]="Expected >=50, found $line_count"
+    all_passed=false
+  fi
+else
+  gates[roadmap_has_content]="FAIL"
+  gate_details[roadmap_has_content]="ROADMAP.md not found"
+  all_passed=false
+fi
+
+# Gate 8: open_questions_populated (OPEN_QUESTIONS.md has >= 1 '## ' header)
+open_questions_file="$SCOPECRAFT_DIR/OPEN_QUESTIONS.md"
+if [[ -f "$open_questions_file" ]]; then
+  oq_count=$(grep -cE "^## " "$open_questions_file" 2>/dev/null || echo 0)
+  if [[ "$oq_count" -ge 1 ]]; then
+    gates[open_questions_populated]="PASS"
+    gate_details[open_questions_populated]="$oq_count questions"
+  else
+    gates[open_questions_populated]="FAIL"
+    gate_details[open_questions_populated]="Expected >=1, found $oq_count"
+    all_passed=false
+  fi
+else
+  gates[open_questions_populated]="FAIL"
+  gate_details[open_questions_populated]="OPEN_QUESTIONS.md not found"
+  all_passed=false
+fi
+
 # Output results
 timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
@@ -173,7 +208,9 @@ if [[ "$OUTPUT_JSON" == true ]]; then
     "stories_have_acceptance_criteria": { "passed": $([ "${gates[stories_have_acceptance_criteria]}" == "PASS" ] && echo true || echo false), "details": "${gate_details[stories_have_acceptance_criteria]}" },
     "risks_documented": { "passed": $([ "${gates[risks_documented]}" == "PASS" ] && echo true || echo false), "details": "${gate_details[risks_documented]}" },
     "metrics_defined": { "passed": $([ "${gates[metrics_defined]}" == "PASS" ] && echo true || echo false), "details": "${gate_details[metrics_defined]}" },
-    "no_todo_placeholders": { "passed": $([ "${gates[no_todo_placeholders]}" == "PASS" ] && echo true || echo false), "details": "${gate_details[no_todo_placeholders]}" }
+    "no_todo_placeholders": { "passed": $([ "${gates[no_todo_placeholders]}" == "PASS" ] && echo true || echo false), "details": "${gate_details[no_todo_placeholders]}" },
+    "roadmap_has_content": { "passed": $([ "${gates[roadmap_has_content]}" == "PASS" ] && echo true || echo false), "details": "${gate_details[roadmap_has_content]}" },
+    "open_questions_populated": { "passed": $([ "${gates[open_questions_populated]}" == "PASS" ] && echo true || echo false), "details": "${gate_details[open_questions_populated]}" }
   },
   "result": "$([ "$all_passed" == true ] && echo PASS || echo FAIL)"
 }
@@ -187,7 +224,7 @@ else
     echo "============================================================"
     echo ""
 
-    for gate in all_outputs_exist phases_in_range stories_have_acceptance_criteria risks_documented metrics_defined no_todo_placeholders; do
+    for gate in all_outputs_exist phases_in_range stories_have_acceptance_criteria risks_documented metrics_defined no_todo_placeholders roadmap_has_content open_questions_populated; do
       if [[ "${gates[$gate]}" == "PASS" ]]; then
         echo -e "\033[92m✓ PASS\033[0m [$gate]"
       else
@@ -209,7 +246,7 @@ else
       fi
     done
 
-    echo "Total: 6 | Passed: $passed_count | Failed: $failed_count"
+    echo "Total: 8 | Passed: $passed_count | Failed: $failed_count"
     echo "------------------------------------------------------------"
     echo ""
 
