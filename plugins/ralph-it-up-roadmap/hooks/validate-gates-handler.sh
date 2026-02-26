@@ -17,6 +17,12 @@
 
 set -euo pipefail
 
+# Require bash 4+ for associative arrays (declare -A)
+if [[ "${BASH_VERSINFO[0]}" -lt 4 ]]; then
+  echo "Error: bash 4+ required (found $BASH_VERSION). On macOS: brew install bash" >&2
+  exit 1
+fi
+
 # Defaults
 SCOPECRAFT_DIR="${PWD}/scopecraft"
 OUTPUT_JSON=false
@@ -49,7 +55,7 @@ if [[ ! -d "$SCOPECRAFT_DIR" ]]; then
   if [[ "$OUTPUT_JSON" == true ]]; then
     echo '{"error": "scopecraft directory not found", "result": "FAIL"}'
   else
-    echo "Error: scopecraft directory not found at $SCOPECRAFT_DIR" >&2
+    echo "Error: scopecraft directory not found at $SCOPECRAFT_DIR. Run a roadmap command first to generate outputs." >&2
   fi
   exit 2
 fi
