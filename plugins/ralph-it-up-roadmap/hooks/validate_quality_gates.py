@@ -97,6 +97,23 @@ class QualityGateValidator:
             "path": "scopecraft/METRICS_AND_PMF.md",
             "pattern": r"North Star Metric",
             "severity": "blocker"
+        },
+        {
+            "id": "roadmap_has_content",
+            "name": "Roadmap has substantive content",
+            "check": "min_lines",
+            "path": "scopecraft/ROADMAP.md",
+            "min": 50,
+            "severity": "blocker"
+        },
+        {
+            "id": "open_questions_populated",
+            "name": "Open questions has at least one question",
+            "check": "pattern_count",
+            "path": "scopecraft/OPEN_QUESTIONS.md",
+            "pattern": r"^## ",
+            "min": 1,
+            "severity": "blocker"
         }
     ]
 
