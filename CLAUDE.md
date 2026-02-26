@@ -52,7 +52,7 @@ Users invoke plugins via:
 
 ## Quality Gates
 
-Quality gates are validation checks that MUST pass before `LOOP_COMPLETE`. These are defined in `validate_quality_gates.py:DEFAULT_GATES`:
+Quality gates are validation checks that MUST pass before `LOOP_COMPLETE`. There are now **8 gates** defined in `validate_quality_gates.py:DEFAULT_GATES`:
 
 | Gate | Requirement |
 |------|-------------|
@@ -62,6 +62,8 @@ Quality gates are validation checks that MUST pass before `LOOP_COMPLETE`. These
 | `risks_documented` | 3+ risk table rows with Technical/Product/GTM types |
 | `metrics_defined` | "North Star Metric" section exists in METRICS_AND_PMF.md |
 | `no_todo_placeholders` | Zero `[TODO]`/`[TBD]`/`[PLACEHOLDER]` markers across all outputs |
+| `roadmap_has_content` | `ROADMAP.md` has ≥ 50 lines |
+| `open_questions_populated` | ≥ 1 `## ` section in `OPEN_QUESTIONS.md` |
 
 ### Required Output Files (6 total)
 
@@ -106,6 +108,17 @@ python plugins/ralph-it-up-roadmap/hooks/validate_quality_gates.py --markdown
 Exit codes: `0`=pass, `1`=blocker failed, `2`=warning/not found
 
 Both validation scripts are pre-approved in `.claude/settings.json` and can run without user confirmation.
+
+### Running Tests Locally
+
+```bash
+# Python tests
+pip install -r plugins/ralph-it-up-roadmap/requirements-dev.txt
+pytest plugins/ralph-it-up-roadmap/tests/python/ -v
+
+# Bash tests (requires bats-core: brew install bats-core)
+bats plugins/ralph-it-up-roadmap/tests/bash/
+```
 
 ## Orchestration Modes
 
