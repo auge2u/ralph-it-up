@@ -2,11 +2,9 @@
 # Source this in bats tests: load "helpers/setup_scopecraft"
 # Provides setup_passing_scopecraft <dir> function
 
-HOOK="$BATS_TEST_DIRNAME/../../hooks/validate-gates-handler.sh"
-
 setup_passing_scopecraft() {
   local dir="$1"
-  mkdir -p "$dir/scopecraft"
+  mkdir -p "$dir/scopecraft" || return 1
 
   cat > "$dir/scopecraft/VISION_AND_STAGE_DEFINITION.md" <<'INNER'
 # Vision
@@ -14,17 +12,63 @@ setup_passing_scopecraft() {
 Content.
 INNER
 
-  # ROADMAP.md: 3 phases, >= 50 lines total
-  python3 - "$dir/scopecraft/ROADMAP.md" <<'PYEOF'
-import sys
-lines = ["# Roadmap\n\n"]
-for i in range(1, 4):
-    lines.append(f"## Phase {i} — Phase Title\n\n")
-    lines.extend(["Content line.\n"] * 15)
-    lines.append("\n---\n\n")
-with open(sys.argv[1], "w") as f:
-    f.writelines(lines)
-PYEOF
+  cat > "$dir/scopecraft/ROADMAP.md" <<'INNER'
+# Roadmap
+
+## Phase 1 — Foundation
+
+**Objective:** Establish core infrastructure.
+
+**Customer Value:** Users can run the plugin end-to-end.
+
+**Deliverables:**
+- Core validation logic
+- Basic test coverage
+- CI integration
+- Documentation
+
+**Metrics / KRs:**
+- All gates pass on first run
+- CI under 60 seconds
+
+---
+
+## Phase 2 — Growth
+
+**Objective:** Expand coverage and reliability.
+
+**Customer Value:** Users trust outputs are complete.
+
+**Deliverables:**
+- Extended quality gates
+- Error handling improvements
+- Contributor documentation
+- Template gallery
+
+**Metrics / KRs:**
+- CI runs in under 60 seconds
+- Zero manual validation steps
+
+---
+
+## Phase 3 — Scale
+
+**Objective:** Support community contributions.
+
+**Customer Value:** External contributors can add plugins.
+
+**Deliverables:**
+- Plugin contribution guide
+- Automated submission validation
+- Community recognition
+- Catalog page
+
+**Metrics / KRs:**
+- 3+ plugins in marketplace
+- External contributor merged
+
+---
+INNER
 
   cat > "$dir/scopecraft/EPICS_AND_STORIES.md" <<'INNER'
 # Epics
