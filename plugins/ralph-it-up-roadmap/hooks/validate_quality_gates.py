@@ -164,7 +164,7 @@ class QualityGateValidator:
                 message=f"File not found: {gate['path']}"
             )
 
-        with open(file_path, "r") as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             lines = len(f.readlines())
 
         min_lines = gate.get("min", 0)
@@ -198,7 +198,7 @@ class QualityGateValidator:
         total_count = 0
 
         for file_path in files:
-            with open(file_path, "r") as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
                 matches = regex.findall(content)
                 total_count += len(matches)
@@ -244,7 +244,7 @@ class QualityGateValidator:
                 message=f"File not found: {gate['path']}"
             )
 
-        with open(file_path, "r") as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
 
         regex = re.compile(gate["pattern"], re.MULTILINE)
@@ -263,13 +263,13 @@ class QualityGateValidator:
 def load_gates_from_config(config_path: Path) -> list:
     """Load quality gates from ralph.yml config."""
     if not HAS_YAML:
-        print("Warning: PyYAML not installed, using default gates", file=sys.stderr)
+        print("Warning: PyYAML not installed — using built-in gates. Install with: pip install pyyaml", file=sys.stderr)
         return None
 
     if not config_path.exists():
         return None
 
-    with open(config_path, "r") as f:
+    with open(config_path, "r", encoding="utf-8") as f:
         config = yaml.safe_load(f)
 
     return config.get("quality_gates")
@@ -382,7 +382,7 @@ def main():
         if args.scratchpad:
             scratchpad_path = Path(args.scratchpad)
             if scratchpad_path.exists():
-                with open(scratchpad_path, "a") as f:
+                with open(scratchpad_path, "a", encoding="utf-8") as f:
                     f.write("\n\n")
                     f.write(generate_markdown_report(results))
                 print(f"\nResults appended to {args.scratchpad}")
