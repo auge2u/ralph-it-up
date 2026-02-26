@@ -29,8 +29,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install bats and shellcheck
-        run: sudo apt-get install -y bats shellcheck
+      - name: Install shellcheck
+        run: sudo apt-get install -y shellcheck
+
+      - name: Install bats-core
+        run: |
+          git clone https://github.com/bats-core/bats-core.git /tmp/bats-core
+          sudo /tmp/bats-core/install.sh /usr/local
 
       - name: Run shellcheck
         run: shellcheck plugins/ralph-it-up-roadmap/hooks/validate-gates-handler.sh
