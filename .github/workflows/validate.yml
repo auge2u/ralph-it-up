@@ -1,0 +1,39 @@
+name: Validate Plugin
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  python-tests:
+    name: Python Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r plugins/ralph-it-up-roadmap/requirements-dev.txt
+
+      - name: Run pytest
+        run: pytest plugins/ralph-it-up-roadmap/tests/python/ -v --tb=short
+
+  bash-tests:
+    name: Bash Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install bats and shellcheck
+        run: sudo apt-get install -y bats shellcheck
+
+      - name: Run shellcheck
+        run: shellcheck plugins/ralph-it-up-roadmap/hooks/validate-gates-handler.sh
+
+      - name: Run bats
+        run: bats plugins/ralph-it-up-roadmap/tests/bash/
