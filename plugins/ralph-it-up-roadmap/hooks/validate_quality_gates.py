@@ -393,7 +393,7 @@ def main():
     if args.markdown:
         print(generate_markdown_report(results))
     else:
-        blockers, warnings = print_results(results, args.verbose)
+        print_results(results, args.verbose)
 
         # Optionally append to scratchpad
         if args.scratchpad:
@@ -404,13 +404,15 @@ def main():
                     f.write(generate_markdown_report(results))
                 print(f"\nResults appended to {args.scratchpad}")
 
-        # Exit code
-        if blockers > 0:
-            sys.exit(1)
-        elif warnings > 0:
-            sys.exit(2)
-        else:
-            sys.exit(0)
+    # Exit code applies regardless of output mode
+    blockers = sum(1 for r in results if not r.passed and r.severity == "blocker")
+    warnings = sum(1 for r in results if not r.passed and r.severity != "blocker")
+    if blockers > 0:
+        sys.exit(1)
+    elif warnings > 0:
+        sys.exit(2)
+    else:
+        sys.exit(0)
 
 
 if __name__ == "__main__":
