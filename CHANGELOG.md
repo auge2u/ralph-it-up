@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- `validate_quality_gates.py`: `--markdown` flag now exits non-zero when blocker
+  gates fail; previously always exited 0 regardless of gate status
+- `validate_quality_gates.py`: warn to stderr when `--scratchpad` file not found
+  instead of silently skipping the append
+- `validate-gates-handler.sh`: `--output-dir` now errors if no value is provided
+- `SKILL.md`: quality gate checklist now matches the 8 implemented gates; removed
+  phantom `epics_have_stories`, `vision_not_empty`, `no_empty_brackets` entries
+  and added `roadmap_has_content` and `open_questions_populated`
+
+### Changed
+- `validate_quality_gates.py`: added `from __future__ import annotations` for
+  Python 3.8/3.9 compatibility; clarified `--output-dir` semantics in docstring
+- CI: upgraded `actions/checkout` to v5 in both jobs
+- CI: pinned `bats-core` install to tag `v1.11.0` for reproducibility
+- CI: added pip dependency caching via `setup-python cache: pip`
+- CI: enabled coverage reporting (`--cov`) in pytest step
+
+### Tests
+- Added `test_markdown_mode_exits_nonzero_on_blocker_failure` (pytest)
+- Added `json mode exits 1 when gates fail` (bats)
+
 ## [1.2.0] - 2026-01-27
 
 ### Added
