@@ -40,6 +40,10 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     --output-dir|-o)
+      if [[ -z "${2-}" ]]; then
+        echo "Error: --output-dir requires a directory argument" >&2
+        exit 1
+      fi
       SCOPECRAFT_DIR="$2"
       shift 2
       ;;
@@ -198,7 +202,9 @@ fi
 timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 if [[ "$OUTPUT_JSON" == true ]]; then
-  # JSON output for programmatic consumption
+  # JSON output for programmatic consumption.
+  # gate_details values are controlled strings (counts, fixed messages) — no user
+  # input reaches them, so embedding them directly is safe.
   cat <<EOF
 {
   "timestamp": "$timestamp",

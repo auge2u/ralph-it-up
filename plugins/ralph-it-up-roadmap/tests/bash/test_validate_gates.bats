@@ -151,6 +151,12 @@ teardown() {
 
 # ── Output modes ───────────────────────────────────────────────────────────────
 
+@test "json mode exits 1 when gates fail" {
+  rm "$TEST_DIR/scopecraft/OPEN_QUESTIONS.md"
+  run "$HOOK" --output-dir "$TEST_DIR/scopecraft" --json
+  [ "$status" -eq 1 ]
+}
+
 @test "quiet mode produces no output on pass" {
   run "$HOOK" --output-dir "$TEST_DIR/scopecraft" --quiet
   [ "$status" -eq 0 ]

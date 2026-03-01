@@ -60,19 +60,17 @@ Before declaring completion, ALL blocker-level quality gates must pass:
 
 ### Output Completeness
 - [ ] **all_outputs_exist**: All 6 scopecraft files created
-- [ ] **vision_not_empty**: VISION_AND_STAGE_DEFINITION.md has 20+ lines
-- [ ] **roadmap_not_empty**: ROADMAP.md has 50+ lines
+- [ ] **roadmap_has_content**: ROADMAP.md has 50+ lines
 
 ### Content Quality
 - [ ] **phases_in_range**: ROADMAP.md has 3-5 phases (matches `^## Phase \d`)
-- [ ] **epics_have_stories**: EPICS_AND_STORIES.md has 5+ stories (matches `^#### Story`)
-- [ ] **stories_have_acceptance_criteria**: 5+ "Acceptance Criteria" sections
-- [ ] **risks_documented**: 3+ risk entries in table format
-- [ ] **metrics_defined**: "North Star Metric" section exists
+- [ ] **stories_have_acceptance_criteria**: 5+ "Acceptance Criteria" sections in EPICS_AND_STORIES.md
+- [ ] **risks_documented**: 3+ risk entries with Technical/Product/GTM type in table
+- [ ] **metrics_defined**: "North Star Metric" section exists in METRICS_AND_PMF.md
+- [ ] **open_questions_populated**: At least 1 `## ` section in OPEN_QUESTIONS.md
 
 ### No Placeholders
-- [ ] **no_todo_placeholders**: Zero `[TODO]`, `[TBD]`, `[PLACEHOLDER]` markers
-- [ ] **no_empty_brackets**: Zero empty `[ ]` template brackets (warning)
+- [ ] **no_todo_placeholders**: Zero `[TODO]`, `[TBD]`, `[PLACEHOLDER]` markers across all outputs
 
 ### Self-Validation Process
 
@@ -80,11 +78,13 @@ Before each iteration ends, mentally run through these checks:
 
 ```
 1. Count files in scopecraft/ - must be 6
-2. Count "## Phase" headers in ROADMAP.md - must be 3-5
-3. Count "#### Story" headers in EPICS_AND_STORIES.md - must be 5+
-4. Search for [TODO], [TBD], [PLACEHOLDER] - must be 0
-5. Verify "North Star Metric" exists in METRICS_AND_PMF.md
-6. Verify risk table has 3+ rows with Technical/Product/GTM
+2. Count lines in ROADMAP.md - must be 50+
+3. Count "## Phase" headers in ROADMAP.md - must be 3-5
+4. Count "Acceptance Criteria" sections in EPICS_AND_STORIES.md - must be 5+
+5. Search for [TODO], [TBD], [PLACEHOLDER] - must be 0
+6. Verify "North Star Metric" exists in METRICS_AND_PMF.md
+7. Verify risk table has 3+ rows with Technical/Product/GTM
+8. Verify OPEN_QUESTIONS.md has at least one "## " section
 ```
 
 If ANY blocker fails, continue iterating. Update scratchpad with:

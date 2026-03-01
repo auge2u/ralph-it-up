@@ -1,4 +1,7 @@
 # plugins/ralph-it-up-roadmap/tests/python/test_integration.py
+import subprocess
+import sys
+
 from validate_quality_gates import QualityGateValidator
 
 
@@ -31,6 +34,16 @@ def test_unknown_check_type_returns_failed_result(tmp_path):
     result = v.validate_all()[0]
     assert result.passed is False
     assert "Unknown check type" in result.message
+
+
+def test_markdown_mode_exits_nonzero_on_blocker_failure(empty_scopecraft):
+    """--markdown must exit 1 when blocker gates fail, not silently exit 0."""
+    hook = __file__.replace("tests/python/test_integration.py", "hooks/validate_quality_gates.py")
+    result = subprocess.run(
+        [sys.executable, hook, "--markdown", "--output-dir", str(empty_scopecraft)],
+        capture_output=True,
+    )
+    assert result.returncode == 1
 
 
 def test_validator_handles_unicode_content(tmp_path):

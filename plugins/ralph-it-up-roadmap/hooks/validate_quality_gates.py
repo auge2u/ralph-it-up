@@ -6,13 +6,24 @@ Validates scopecraft outputs against quality gate definitions.
 Can be run standalone or as a ralph-orchestrator hook.
 
 Usage:
-    python validate_quality_gates.py [--config ralph.yml] [--output-dir scopecraft]
+    python validate_quality_gates.py [--config ralph.yml] [--output-dir DIR]
+
+    --output-dir is the project root directory that contains the scopecraft/
+    subdirectory (default: current directory). Gates reference paths like
+    scopecraft/ROADMAP.md relative to this root.
+
+    Note: the bash validator (validate-gates-handler.sh) takes the scopecraft
+    directory itself via --output-dir, not the parent. Pass the parent here.
 
 Exit codes:
     0 - All gates passed
     1 - Blocker gates failed
     2 - Warning gates failed (but no blockers)
+
+Requires Python 3.8+. The from __future__ import below makes the type hints
+(list[...], tuple[...]) work on Python 3.8 and 3.9 without the typing module.
 """
+from __future__ import annotations
 
 import argparse
 import glob
@@ -403,6 +414,8 @@ def main():
                     f.write("\n\n")
                     f.write(generate_markdown_report(results))
                 print(f"\nResults appended to {args.scratchpad}")
+            else:
+                print(f"Warning: scratchpad file not found, skipping append: {args.scratchpad}", file=sys.stderr)
 
     # Exit code applies regardless of output mode
     blockers = sum(1 for r in results if not r.passed and r.severity == "blocker")
